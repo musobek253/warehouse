@@ -41,4 +41,5 @@ public class ProductController {
     public ApiResponse deletedProduct(@PathVariable Integer id){
         return productservice.deleted(id);
     }
+    //
 }
