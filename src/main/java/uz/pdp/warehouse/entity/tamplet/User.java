@@ -3,9 +3,8 @@ package uz.pdp.warehouse.entity.tamplet;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -36,6 +35,6 @@ public class User {
     private boolean active;
 
     @ManyToMany
-    private Set<Warehouse> warehouses;
+    private List<Warehouse> warehouses;
 }
 

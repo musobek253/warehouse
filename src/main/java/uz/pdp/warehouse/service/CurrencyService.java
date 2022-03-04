@@ -3,7 +3,6 @@ package uz.pdp.warehouse.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uz.pdp.warehouse.entity.tamplet.Currency;
-import uz.pdp.warehouse.entity.tamplet.Warehouse;
 import uz.pdp.warehouse.payload.ApiResponse;
 import uz.pdp.warehouse.repositary.CurrencyRepository;
 

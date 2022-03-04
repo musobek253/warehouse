@@ -15,4 +15,5 @@ public class Client extends AbstracEntity{
 
     @Column(nullable = false, unique = true)
     private String phoneNumber;
+
 }
