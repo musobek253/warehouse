@@ -25,4 +25,5 @@ public class Product  extends AbstracEntity{
     private Measurement measurement;
 
     private String code;
+
 }

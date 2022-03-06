@@ -8,6 +8,7 @@ import uz.pdp.warehouse.payload.OutputProductDto;
 import uz.pdp.warehouse.repositary.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,13 +19,15 @@ public class OutputProductService {
     private final ProductRepository productRepository;
     private final WarehouseRepository warehouseRepository;
     private final InputProductRepository inputProductRepository;
+    private final SummaRepository summaRepository;
     @Autowired
-    public OutputProductService(OutputProductRepository outputProductRepository, OutputRepository outputRepository, ProductRepository productRepository, WarehouseRepository warehouseRepository, InputProductRepository inputProductRepository) {
+    public OutputProductService(OutputProductRepository outputProductRepository, OutputRepository outputRepository, ProductRepository productRepository, WarehouseRepository warehouseRepository, InputProductRepository inputProductRepository, SummaRepository summaRepository) {
         this.outputProductRepository = outputProductRepository;
         this.outputRepository = outputRepository;
         this.productRepository = productRepository;
         this.warehouseRepository = warehouseRepository;
         this.inputProductRepository = inputProductRepository;
+        this.summaRepository = summaRepository;
     }
 
     public ApiResponse addOutputProduct(OutputProductDto outputProductDto) {
@@ -35,28 +38,26 @@ public class OutputProductService {
         if (!optionalProduct.isPresent())
             return new ApiResponse("Product Not found",false);
         OutputProduct outputProduct = new OutputProduct();
-        outputProduct.setOutput(optionalOutput.get());
         Output output = optionalOutput.get();
         Warehouse warehouse = output.getWarehouse();
         Integer id = warehouse.getId();
-        List<InputProduct> inputProductList = inputProductRepository.getAllByInput_WarehouseId(id);
-        int summ = 0;
-        for (InputProduct inputProduct : inputProductList) {
-            if (inputProduct.getProduct().getId() == outputProductDto.getProductId()){
-                summ += inputProduct.getAmount();
-            }
-        }
-        if (summ>outputProductDto.getAmount()){
+        Integer id1 = optionalProduct.get().getId();
+        if (!summaRepository.existsByWarehousesIdInAndProductsIdIn(Collections.singletonList(id), Collections.singletonList(id1)))
+            return new ApiResponse("bu omborda bunday mahsult qolmagan ",false);
+        Optional<Summa> optionalSumma = summaRepository.findByWarehousesIdInAndProductsIdIn(Collections.singletonList(id), Collections.singletonList(id1));
+        Summa summa = optionalSumma.get();
+        double summa1 = summa.getSumma();
+        if (summa1>outputProductDto.getAmount()){
+            outputProduct.setOutput(optionalOutput.get());
+            outputProduct.setProduct(optionalProduct.get());
             outputProduct.setPrice(outputProductDto.getPrice());
             outputProduct.setAmount(outputProductDto.getAmount());
             outputProductRepository.save(outputProduct);
+            summa.setSumma(summa.getSumma()-outputProductDto.getAmount());
+            summaRepository.save(summa);
             return new ApiResponse("OutputProduct added",true);
-
         }
         return new ApiResponse("bazda mahsulotlar bu miqdordan kam ",false);
-
-
-
     }
 
     public ApiResponse editOutputProduct(Integer id,OutputProductDto outputProductDto){
