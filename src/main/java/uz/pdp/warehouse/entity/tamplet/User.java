@@ -32,7 +32,7 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    private boolean active;
+    private boolean active = true;
 
     @ManyToMany
     private List<Warehouse> warehouses;

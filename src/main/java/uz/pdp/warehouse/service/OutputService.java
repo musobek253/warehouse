@@ -27,7 +27,6 @@ public class OutputService {
         this.clientRepository = clientRepository;
     }
 
-
     public ApiResponse addOutput(OutputDto outputDto) {
         Optional<Warehouse> warehouseOptional = warehouseRepository.findById(outputDto.getWarehouseId());
         Optional<Currency> currencyOptional = currencyRepository.findById(outputDto.getCurrencyId());
